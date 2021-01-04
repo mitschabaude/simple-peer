@@ -1,17 +1,27 @@
-# simple-peer [![ci][ci-image]][ci-url] [![coveralls][coveralls-image]][coveralls-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url] [![javascript style guide][sauce-image]][sauce-url]
+# simple-peer-light [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url]
 
-[ci-image]: https://img.shields.io/github/workflow/status/feross/simple-peer/ci/master
-[ci-url]: https://github.com/feross/simple-peer/actions
-[coveralls-image]: https://coveralls.io/repos/github/feross/simple-peer/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/feross/simple-peer?branch=master
 [npm-image]: https://img.shields.io/npm/v/simple-peer.svg
 [npm-url]: https://npmjs.org/package/simple-peer
 [downloads-image]: https://img.shields.io/npm/dm/simple-peer.svg
 [downloads-url]: https://npmjs.org/package/simple-peer
 [standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
 [standard-url]: https://standardjs.com
-[sauce-image]: https://saucelabs.com/buildstatus/simple-peer
-[sauce-url]: https://saucelabs.com/u/simple-peer
+
+This is a light-weight, browser-friendly fork of [feross/simple-peer](https://github.com/feross/simple-peer):
+
+- Zero external dependencies
+- Bundle size reduced from 28 kB to **5 kB** (minified, gzipped)
+- Can be directly imported in a `<script type="module">` without bundling
+
+**Caveats compared to [feross/simple-peer](https://github.com/feross/simple-peer)**
+
+- The `Peer` class does not inherit from `Duplex`, which means it does not support node's stream API. Instead, I added basic EventEmitter-style methods `.on()`, `.off()`, `.once()` and `.emit()`.
+- Because `index.js` uses an ESM export instead of CJS, it does not work in node. So this fork is for the browser only!
+- For the same reason, the browser tests can also not be executed. However, I did update the tests to reflect the API changes and made sure all tests pass if a CJS export is used in `index.js`.
+
+I updated the documentation below to reflect these changes.
+
+**WARNING:** I made this fork for my personal use and do NOT intend to keep it up to date with changes in [feross/simple-peer](https://github.com/feross/simple-peer).
 
 #### Simple WebRTC video, voice, and data channels
 
@@ -28,7 +38,6 @@
 ## features
 
 - concise, **node.js style** API for [WebRTC](https://en.wikipedia.org/wiki/WebRTC)
-- **works in node and the browser!**
 - supports **video/voice streams**
 - supports **data channel**
   - text and binary data
@@ -37,35 +46,26 @@
   - manually set config options
   - transceivers and renegotiation
 
-This package is used by [WebTorrent](https://webtorrent.io) and [many others](#who-is-using-simple-peer).
-
 - [install](#install)
 - [examples](#usage)
   * [A simpler example](#a-simpler-example)
   * [data channels](#data-channels)
   * [video/voice](#videovoice)
   * [dynamic video/voice](#dynamic-videovoice)
-  * [in node](#in-node)
 - [api](#api)
-- [events](#events)
 - [error codes](#error-codes)
 - [connecting more than 2 peers?](#connecting-more-than-2-peers)
 - [memory usage](#memory-usage)
 - [connection does not work on some networks?](#connection-does-not-work-on-some-networks)
-- [Who is using `simple-peer`?](#who-is-using-simple-peer)
 - [license](#license)
 
 ## install
 
 ```
-npm install simple-peer
+npm install simple-peer-light
 ```
 
-This package works in the browser with [browserify](https://browserify.org). If
-you do not use a bundler, you can use the `simplepeer.min.js` standalone script
-directly in a `<script>` tag. This exports a `SimplePeer` constructor on
-`window`. Wherever you see `Peer` in the examples below, substitute that with
-`SimplePeer`.
+This package works in the browser without modification. The `simplepeer.min.js` script is just a minified version for usage without a build pipeline.
 
 ## usage
 
@@ -86,9 +86,9 @@ Let's create an html page that lets you manually connect two peers:
       <button type="submit">submit</button>
     </form>
     <pre id="outgoing"></pre>
-    <script src="simplepeer.min.js"></script>
     <script>
-      const p = new SimplePeer({
+      import Peer from './simplepeer.min.js'
+      const p = new Peer({
         initiator: location.hash === '#1',
         trickle: false
       })
@@ -139,7 +139,7 @@ peer-to-peer connection is established.
 ### data channels
 
 ```js
-var Peer = require('simple-peer')
+import Peer from 'simple-peer-light'
 
 var peer1 = new Peer({ initiator: true })
 var peer2 = new Peer()
@@ -170,7 +170,7 @@ peer2.on('data', data => {
 Video/voice is also super simple! In this example, peer1 sends video to peer2.
 
 ```js
-var Peer = require('simple-peer')
+import Peer from 'simple-peer-light'
 
 // get video/voice stream
 navigator.mediaDevices.getUserMedia({
@@ -215,7 +215,7 @@ It is also possible to establish a data-only connection at first, and later add
 a video/voice stream, if desired.
 
 ```js
-var Peer = require('simple-peer') // create peer without waiting for media
+import Peer from 'simple-peer-light' // create peer without waiting for media
 
 var peer1 = new Peer({ initiator: true }) // you don't need streams here
 var peer2 = new Peer()
@@ -250,18 +250,6 @@ navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
 }).then(addMedia).catch(() => {})
-```
-
-### in node
-
-To use this library in node, pass in `opts.wrtc` as a parameter (see [the constructor options](#peer--new-peeropts)):
-
-```js
-var Peer = require('simple-peer')
-var wrtc = require('wrtc')
-
-var peer1 = new Peer({ initiator: true, wrtc: wrtc })
-var peer2 = new Peer({ wrtc: wrtc })
 ```
 
 ## api
@@ -363,22 +351,13 @@ event on the stream.
 Detect native WebRTC support in the javascript environment.
 
 ```js
-var Peer = require('simple-peer')
+import Peer from 'simple-peer-light'
 
 if (Peer.WEBRTC_SUPPORT) {
   // webrtc support!
 } else {
   // fallback
 }
-```
-
-## events
-
-`Peer` objects are instance of `EventEmitter`. Take a look at the [nodejs events documentation](https://nodejs.org/api/events.html) for more information.
-
-Example of removing all registered **close**-event listeners:
-```js
-peer.removeAllListeners('close')
 ```
 
 ### `peer.on('signal', data => {})`
@@ -568,11 +547,10 @@ peer2.on('data', data => {
 
 ## memory usage
 
-If you call `peer.send(buf)`, `simple-peer` is not keeping a reference to `buf`
+If you call `peer.send(buf)`, `simple-peer-light` is not keeping a reference to `buf`
 and sending the buffer at some later point in time. We immediately call
 `channel.send()` on the data channel. So it should be fine to mutate the buffer
 right afterward.
-
 
 ## connection does not work on some networks?
 
@@ -585,60 +563,6 @@ In order to use a TURN server, you must specify the `config` option to the `Peer
 constructor. See the API docs above.
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
-
-
-## Who is using `simple-peer`?
-
-- [WebTorrent](http://webtorrent.io) - Streaming torrent client in the browser
-- [Virus Cafe](https://virus.cafe) - Make a friend in 2 minutes
-- [Instant.io](https://instant.io) - Secure, anonymous, streaming file transfer
-- [Zencastr](https://zencastr.com) - Easily record your remote podcast interviews in studio quality.
-- [Friends](https://github.com/moose-team/friends) - Peer-to-peer chat powered by the web
-- [Socket.io-p2p](https://github.com/socketio/socket.io-p2p) - Official Socket.io P2P communication library
-- [ScreenCat](https://maxogden.github.io/screencat/) - Screen sharing + remote collaboration app
-- [WebCat](https://www.npmjs.com/package/webcat) - P2P pipe across the web using Github private/public key for auth
-- [RTCCat](https://www.npmjs.com/package/rtcat) - WebRTC netcat
-- [PeerNet](https://www.npmjs.com/package/peernet) - Peer-to-peer gossip network using randomized algorithms
-- [PusherTC](http://pushertc.herokuapp.com) - Video chat with using Pusher. See [guide](http://blog.carbonfive.com/2014/10/16/webrtc-made-simple/).
-- [lxjs-chat](https://github.com/feross/lxjs-chat) - Omegle-like video chat site
-- [Whiteboard](https://github.com/feross/whiteboard) - P2P Whiteboard powered by WebRTC and WebTorrent
-- [Peer Calls](https://peercalls.com) - WebRTC group video calling. Create a room. Share the link.
-- [Netsix](https://mmorainville.github.io/netsix-gh-pages/) - Send videos to your friends using WebRTC so that they can watch them right away.
-- [Stealthy](https://www.stealthy.im) - Stealthy is a decentralized, end-to-end encrypted, p2p chat application.
-- [oorja.io](https://github.com/akshayKMR/oorja) - Effortless video-voice chat with realtime collaborative features. Extensible using react components 🙌
-- [TalktoMe](https://talktome.universal-apps.xyz) - Skype alternative for audio/video conferencing based on WebRTC, but without the loss of packets.
-- [CDNBye](https://github.com/cdnbye/hlsjs-p2p-engine) - CDNBye implements WebRTC datachannel to scale live/vod video streaming by peer-to-peer network using bittorrent-like protocol
-- [Detox](https://github.com/Detox) - Overlay network for distributed anonymous P2P communications entirely in the browser
-- [Metastream](https://github.com/samuelmaddock/metastream) - Watch streaming media with friends.
-- [firepeer](https://github.com/natzcam/firepeer) - secure signalling and authentication using firebase realtime database
-- [Genet](https://github.com/elavoie/webrtc-tree-overlay) - Fat-tree overlay to scale the number of concurrent WebRTC connections to a single source ([paper](https://arxiv.org/abs/1904.11402)).
-- [WebRTC Connection Testing](https://github.com/elavoie/webrtc-connection-testing) - Quickly test direct connectivity between all pairs of participants ([demo](https://webrtc-connection-testing.herokuapp.com/)).
-- [Firstdate.co](https://firstdate.co) - Online video dating for actually meeting people and not just messaging them
-- [TensorChat](https://github.com/EhsaanIqbal/tensorchat) - It's simple - Create. Share. Chat.
-- [On/Office](https://onoffice.app) - View your desktop in a WebVR-powered environment
-- [Cyph](https://www.cyph.com) - Cryptographically secure messaging and social networking service, providing an extreme level of privacy combined with best-in-class ease of use
-- [Ciphora](https://github.com/HR/ciphora) - A peer-to-peer end-to-end encrypted messaging chat app.
-- [Whisthub](https://www.whisthub.com) - Online card game Color Whist with the possibility to start a video chat while playing.
-- [Brie.fi/ng](https://brie.fi/ng) - Secure anonymous video chat
-- [Peer.School](https://github.com/holtwick/peer2school) - Simple virtual classroom starting from the 1st class including video chat and real time whiteboard
-- [FileFire](https://filefire.ca) - Transfer large files and folders at high speed without size limits.
-- [safeShare](https://github.com/vj-abishek/airdrop) - Transfer files easily with text and voice communication.
-- [CubeChat](https://cubechat.io) - Party in 3D 🎉
-- [Homely School](https://homelyschool.com) - A virtual schooling system
-- [AnyDrop](https://anydrop.io) - Cross-platform AirDrop alternative [with an Android app available at Google Play](https://play.google.com/store/apps/details?id=com.benjijanssens.anydrop)
-- [Share-Anywhere](https://share-anywhere.com/) - Cross-platform file transfer
-- [QuaranTime.io](https://quarantime.io/) - The Activity board-game in video!
-- [Trango](https://web.trango.io) - Cross-platform calling and file sharing solution.
-- [P2PT](https://github.com/subins2000/p2pt) - Use WebTorrent trackers as signalling servers for making WebRTC connections
-- [Dots](https://github.com/subins2000/vett) - Online multiplayer Dots & Boxes game. [Play Here!](https://vett.space)
-- [simple-peer-files](https://github.com/subins2000/simple-peer-files) - A simple library to easily transfer files over WebRTC. Has a feature to resume file transfer after uploader interruption.
-- [WebDrop.Space](https://WebDrop.Space) - Share files and messages across devices. Cross-platform, no installation alternative to AirDrop, Xender. [Source Code](https://github.com/subins2000/WebDrop)
-- [Speakrandom](https://speakrandom.com) - Voice-chat social network using simple-peer to create audio conferences!
-- [Deskreen](https://deskreen.com) - A desktop app that helps you to turn any device into a secondary screen for your computer. It uses simple-peer for sharing entire computer screen to any device with a web browser.
-
-
-
-- *Your app here! - send a PR!*
 
 ## license
 
