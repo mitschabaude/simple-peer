@@ -85,7 +85,7 @@ test('signal event does not get emitted by non-initiator with stream', function 
 })
 
 test('data send/receive text', function (t) {
-  t.plan(10)
+  t.plan(8)
 
   const peer1 = new Peer({ config, initiator: true, wrtc: common.wrtc })
   const peer2 = new Peer({ config, wrtc: common.wrtc })
@@ -115,13 +115,11 @@ test('data send/receive text', function (t) {
 
     peer1.send('sup peer2')
     peer2.on('data', function (data) {
-      t.ok(Buffer.isBuffer(data), 'data is Buffer')
-      t.equal(data.toString(), 'sup peer2', 'got correct message')
+      t.equal(data, 'sup peer2', 'got correct message')
 
       peer2.send('sup peer1')
       peer1.on('data', function (data) {
-        t.ok(Buffer.isBuffer(data), 'data is Buffer')
-        t.equal(data.toString(), 'sup peer1', 'got correct message')
+        t.equal(data, 'sup peer1', 'got correct message')
 
         peer1.on('close', function () { t.pass('peer1 destroyed') })
         peer1.destroy()

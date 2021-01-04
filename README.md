@@ -32,7 +32,6 @@
 - supports **video/voice streams**
 - supports **data channel**
   - text and binary data
-  - node.js [duplex stream](http://nodejs.org/api/stream.html) interface
 - supports advanced options like:
   - enable/disable [trickle ICE candidates](http://webrtchacks.com/trickle-ice/)
   - manually set config options
@@ -289,7 +288,6 @@ If `opts` is specified, then the default options (shown below) will be overridde
   trickle: true,
   allowHalfTrickle: false,
   wrtc: {}, // RTCPeerConnection/RTCSessionDescription/RTCIceCandidate
-  objectMode: false
 }
 ```
 
@@ -310,7 +308,6 @@ The options do the following:
   - [`RTCSessionDescription`](https://www.w3.org/TR/webrtc/#dom-rtcsessiondescription)
   - [`RTCIceCandidate`](https://www.w3.org/TR/webrtc/#dom-rtcicecandidate)
 
-- `objectMode` - set to `true` to create the stream in [Object Mode](https://nodejs.org/api/stream.html#stream_object_mode). In this mode, incoming string data is not automatically converted to `Buffer` objects.
 
 ### `peer.signal(data)`
 
@@ -325,10 +322,10 @@ to get connected.
 ### `peer.send(data)`
 
 Send text/binary data to the remote peer. `data` can be any of several types: `String`,
-`Buffer` (see [buffer](https://github.com/feross/buffer)), `ArrayBufferView` (`Uint8Array`,
+`ArrayBufferView` (`Uint8Array`,
 etc.), `ArrayBuffer`, or `Blob` (in browsers that support it).
 
-Note: If this method is called before the `peer.on('connect')` event has fired, then an exception will be thrown. Use `peer.write(data)` (which is inherited from the node.js [duplex stream](http://nodejs.org/api/stream.html) interface) if you want this data to be buffered instead.
+Note: If this method is called before the `peer.on('connect')` event has fired, then an exception will be thrown.
 
 ### `peer.addStream(stream)`
 
@@ -375,21 +372,6 @@ if (Peer.WEBRTC_SUPPORT) {
 }
 ```
 
-### duplex stream
-
-`Peer` objects are instances of `stream.Duplex`. They behave very similarly to a
-`net.Socket` from the node core `net` module. The duplex stream reads/writes to the data
-channel.
-
-```js
-var peer = new Peer(opts)
-// ... signaling ...
-peer.write(new Buffer('hey'))
-peer.on('data', function (chunk) {
-  console.log('got a chunk', chunk)
-})
-```
-
 ## events
 
 `Peer` objects are instance of `EventEmitter`. Take a look at the [nodejs events documentation](https://nodejs.org/api/events.html) for more information.
@@ -420,7 +402,7 @@ Fired when the peer connection and data channel are ready to use.
 
 Received a message from the remote peer (via the data channel).
 
-`data` will be either a `String` or a `Buffer/Uint8Array` (see [buffer](https://github.com/feross/buffer)).
+`data` will be either a `String` or a `Uint8Array`.
 
 ### `peer.on('stream', stream => {})`
 
@@ -590,11 +572,6 @@ If you call `peer.send(buf)`, `simple-peer` is not keeping a reference to `buf`
 and sending the buffer at some later point in time. We immediately call
 `channel.send()` on the data channel. So it should be fine to mutate the buffer
 right afterward.
-
-However, beware that `peer.write(buf)` (a writable stream method) does not have
-the same contract. It will potentially buffer the data and call
-`channel.send()` at a future point in time, so definitely don't assume it's
-safe to mutate the buffer.
 
 
 ## connection does not work on some networks?
