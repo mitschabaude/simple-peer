@@ -1,24 +1,15 @@
 {
-  "name": "simple-peer",
+  "name": "simple-peer-light",
   "description": "Simple one-to-one WebRTC video/voice and data channels",
-  "version": "9.11.1",
+  "version": "1.0.0",
   "author": {
-    "name": "Feross Aboukhadijeh",
-    "email": "feross@feross.org",
-    "url": "https://feross.org"
+    "name": "Gregor Mitscha-Baude",
+    "email": "gregor.mitscha-baude@gmx.at"
   },
   "bugs": {
-    "url": "https://github.com/feross/simple-peer/issues"
+    "url": "https://github.com/mitschabaude/simple-peer-light/issues"
   },
-  "dependencies": {
-    "buffer": "^6.0.3",
-    "debug": "^4.3.2",
-    "err-code": "^3.0.1",
-    "get-browser-rtc": "^1.1.0",
-    "queue-microtask": "^1.2.3",
-    "randombytes": "^2.1.0",
-    "readable-stream": "^3.6.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "airtap": "^4.0.3",
     "airtap-manual": "^1.0.0",
@@ -57,7 +48,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/feross/simple-peer.git"
+    "url": "git://github.com/mitschabaude/simple-peer-light.git"
   },
   "scripts": {
     "build": "minify index.js --sourceType module --outFile simplepeer.min.js",
@@ -69,19 +60,5 @@
     "test-browser-local": "airtap --coverage --preset local -- test/*.js",
     "test-node": "WRTC=wrtc tape test/*.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
-  },
-  "funding": [
-    {
-      "type": "github",
-      "url": "https://github.com/sponsors/feross"
-    },
-    {
-      "type": "patreon",
-      "url": "https://www.patreon.com/feross"
-    },
-    {
-      "type": "consulting",
-      "url": "https://feross.org/support"
-    }
-  ]
+  }
 }
