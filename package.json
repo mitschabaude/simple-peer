@@ -60,7 +60,8 @@
     "url": "git://github.com/feross/simple-peer.git"
   },
   "scripts": {
-    "build": "browserify -s SimplePeer -r . | minify > simplepeer.min.js",
+    "build": "minify index.js --sourceType module --outFile simplepeer.min.js",
+    "build-browserify": "browserify -s SimplePeer -r . | minify > simplepeer.min.js",
     "size": "npm run build && cat simplepeer.min.js | gzip | wc -c",
     "// test": "standard && npm run test-node && npm run test-browser",
     "test": "standard && npm run test-browser",
