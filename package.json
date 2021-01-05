@@ -1,6 +1,6 @@
 {
   "name": "simple-peer-light",
-  "description": "Simple one-to-one WebRTC video/voice and data channels",
+  "description": "Simple, light-weight WebRTC video/voice and data channels",
   "version": "1.0.0",
   "author": {
     "name": "Gregor Mitscha-Baude",
