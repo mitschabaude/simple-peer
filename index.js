@@ -5,7 +5,7 @@ const CHANNEL_CLOSING_TIMEOUT = 5 * 1000
 
 function randombytes (size) {
   const array = new Uint8Array(size)
-  for (let i=0; i<size; i++) {
+  for (let i = 0; i < size; i++) {
     array[i] = (Math.random() * 256) | 0
   }
   return array
