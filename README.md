@@ -21,7 +21,7 @@ This is a light-weight, browser-friendly fork of [feross/simple-peer](https://gi
 
 The documentation below is updated to reflect these changes.
 
-**WARNING:** I made this fork for my personal use and do not intend to keep it up to date with changes in [feross/simple-peer](https://github.com/feross/simple-peer).
+Regarding ongoing development in `simple-peer`, the strategy for this repo is to keep merging in upstream changes while maintaining the initial diff. We will update the npm package accordingly and our versioning will track the version of `simple-peer` 1:1, to make it obvious at what point of the release history we are.
 
 <h5 align="center">
   Sponsored by&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://dfinity.org/"><img src="https://cdn.rawgit.com/feross/simple-peer/master/img/dfinity-sponsor.png" alt="DFINITY" width=250 valign="middle"></a>
