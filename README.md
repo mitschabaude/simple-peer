@@ -23,16 +23,6 @@ The documentation below is updated to reflect these changes.
 
 Regarding ongoing development in `simple-peer`, the strategy for this repo is to keep merging in upstream changes while maintaining the initial diff. We will update the npm package accordingly and our versioning will track the version of `simple-peer` 1:1, to make it obvious at what point of the release history we are.
 
-<h5 align="center">
-  Sponsored by&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://dfinity.org/"><img src="https://cdn.rawgit.com/feross/simple-peer/master/img/dfinity-sponsor.png" alt="DFINITY" width=250 valign="middle"></a>
-</h5>
-
-> We are hiring a peer-to-peer WebRTC mobile Web application expert.
->
-> [DFINITY](http://dfinity.org/) is building an exciting peer-to-peer WebRTC-based mobile Web app to help improve democracy on the Internet Computer blockchain. The mobile web app connects groups of up to four people in a peer-to-peer WebRTC audio and video call so that they can mutually prove unique personhood.
->
-> We are looking for a software engineer or consultant who can help us solve (platform-dependent) reliability issues of our implementation. We are interested in applicants with substantial WebRTC experience for mobile Web apps, experience with different communication patterns (e.g., peer-to-peer, server relay), and substantial problem-solving skills. Having experience in automated testing of this type of applications is a plus. Pay is extremely competitive for the right expertise. For details, please see the [full job description](https://boards.greenhouse.io/dfinity/jobs/5910101002?gh_src=c28327ae2us). 
-
 ## features
 
 - concise, **node.js style** API for [WebRTC](https://en.wikipedia.org/wiki/WebRTC)
